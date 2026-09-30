@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TOEIC Flashcards</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#14213d;--mute:#5d6b85;--line:#d9dfeb;--acc:#2f5bea;--ok:#178a5c;--no:#c27412;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--card:#171f36;--ink:#eaf0ff;--mute:#9aa8c7;--line:#2a3555;--acc:#7c9bff;--ok:#3ecf94;--no:#f0a94a}}
+:root[data-theme="dark"]{--bg:#0e1424;--card:#171f36;--ink:#eaf0ff;--mute:#9aa8c7;--line:#2a3555;--acc:#7c9bff;--ok:#3ecf94;--no:#f0a94a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0}h2{margin:0 0 8px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.stat{font-size:13px;color:var(--mute)}
+nav{display:flex;gap:6px;margin-bottom:14px}
+nav button{flex:1;padding:10px 4px;border:1px solid var(--line);background:transparent;color:var(--mute);border-radius:10px;font:inherit;font-size:14px;cursor:pointer}
+nav button.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+select,input[type=text]{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;margin-bottom:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;min-height:280px;padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;user-select:none;touch-action:pan-y}
+.q{cursor:default;align-items:stretch;text-align:left;user-select:text}
+.word{font-size:34px;font-weight:700;letter-spacing:-.5px;word-break:break-word}
+.hint{font-size:13px;color:var(--mute);margin-top:14px}
+.mean{font-size:24px;font-weight:700;color:var(--acc)}
+.ex{margin-top:12px;color:var(--mute);font-style:italic}
+.box{font-size:12px;color:var(--mute);margin-bottom:10px}
+.row{display:flex;gap:10px;margin-top:14px}
+.row button,.btn{flex:1;padding:14px;border:0;border-radius:12px;font:inherit;font-weight:700;color:#fff;cursor:pointer}
+.no{background:var(--no)}.ok{background:var(--ok)}.btn{background:var(--acc)}
+.ghost{background:transparent!important;border:1px solid var(--line)!important;color:var(--ink)!important;font-weight:500!important}
+.spk{margin-top:12px;padding:8px 14px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;cursor:pointer}
+.prompt{font-size:21px;line-height:1.6;margin:6px 0 14px}
+.opt{display:block;width:100%;text-align:left;padding:13px 14px;margin-top:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;font:inherit;cursor:pointer}
+.opt.right{border:2px solid var(--ok);color:var(--ok);font-weight:700}
+.opt.wrong{border:2px solid var(--no);color:var(--no)}
+textarea{width:100%;min-height:110px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+label{display:block;font-size:14px;color:var(--mute);margin:12px 0 6px}
+.list{margin-top:14px;border-top:1px solid var(--line);max-height:260px;overflow-y:auto}
+.item{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.item span{color:var(--mute);text-align:right}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:flex;align-items:center;gap:10px;font-size:14px}
+.bar i{display:block;height:14px;border-radius:7px;background:var(--acc);min-width:2px}
+.done{text-align:center;padding:30px 10px}
+.sense{padding:10px 0;border-bottom:1px solid var(--line)}
+.sl{display:flex!important;gap:10px;align-items:flex-start;color:var(--ink)!important;font-size:15px!important;margin:0 0 8px!important}
+.sl input{width:20px;height:20px;margin-top:3px;flex:0 0 auto}
+.vi{color:var(--acc);font-size:14px}
+.sense input[type=text]{margin:0;font-size:14px}
+summary{cursor:pointer;color:var(--mute);font-size:14px;padding:6px 0}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<header><h1>TOEIC Flashcards</h1><div class="stat" id="stat"></div></header>
+<nav><button data-t="study" class="on">Ôn tập</button><button data-t="quiz">Trắc nghiệm</button><button data-t="add">Thêm từ</button><button data-t="stats">Thống kê</button></nav>
+<section id="study"></section>
+<section id="quiz" hidden></section>
+<section id="add" hidden>
+<label for="t">Chủ đề</label>
+<input type="text" id="t" list="tl" placeholder="Mặc định: Của tôi"><datalist id="tl"></datalist>
+<label for="q">Tra từ mới</label>
+<div class="row" style="margin-top:0"><input type="text" id="q" placeholder="Nhập từ tiếng Anh rồi bấm Tra từ" style="margin:0;flex:1"><button class="btn" id="look" style="flex:0 0 auto;padding:12px 18px">Tra từ</button></div>
+<div id="res"></div>
+<details style="margin-top:16px"><summary>Nhập thủ công hoặc dán nhiều từ</summary>
+<input type="text" id="w" placeholder="Từ tiếng Anh, ví dụ: negotiate">
+<input type="text" id="m" placeholder="Nghĩa tiếng Việt">
+<input type="text" id="e" placeholder="Câu ví dụ có chứa đúng từ trên (dùng cho trắc nghiệm)">
+<div class="row"><button class="btn" id="addOne">Thêm từ</button></div>
+<label for="bulk">Hoặc dán nhiều từ vào chủ đề trên, mỗi dòng: từ | nghĩa | ví dụ</label>
+<textarea id="bulk" placeholder="deadline | hạn chót | We must meet the deadline."></textarea>
+<div class="row"><button class="btn" id="addBulk">Thêm danh sách</button></div>
+</details>
+<div class="row"><button class="btn ghost" id="exp">Sao lưu (tải file)</button><button class="btn ghost" id="imp">Khôi phục</button></div>
+<input type="file" id="file" accept=".json" hidden>
+<div class="list" id="list"></div>
+</section>
+<section id="stats" hidden></section>
+</main>
+<script>
+const KEY="toeic.flash.v2",DAY=864e5,IV=[0,1,3,7,14],DEF="Của tôi";
+const SEED={
+"Văn phòng":`agenda|chương trình họp|The agenda was sent before the meeting.
+colleague|đồng nghiệp|My colleague will cover the shift.
+supervisor|người giám sát|Ask your supervisor for approval.
+schedule|lịch trình|The schedule has been updated.
+postpone|hoãn lại|We will postpone the meeting until May.
+deadline|hạn chót|We must meet the deadline.
+attend|tham dự|All staff must attend the training session.
+submit|nộp|Please submit your report by noon.`,
+"Hợp đồng":`negotiate|đàm phán|The two firms will negotiate the contract.
+renew|gia hạn|You need to renew your membership before it expires.
+terminate|chấm dứt|Either party may terminate the agreement.
+clause|điều khoản|Please read the last clause carefully.
+comply|tuân thủ|All vendors must comply with the safety rules.
+obligation|nghĩa vụ|Each side has a legal obligation to pay on time.
+amend|sửa đổi|They agreed to amend the terms of the lease.
+warranty|bảo hành|The warranty covers repairs for two years.`,
+"Du lịch":`itinerary|lịch trình chuyến đi|Our itinerary includes two days in Da Nang.
+reservation|đặt chỗ|I made a reservation for four people.
+luggage|hành lý|Your luggage must be checked at the counter.
+board|lên (máy bay)|Passengers may board the flight at gate 12.
+delay|sự chậm trễ|Heavy rain caused a long delay.
+destination|điểm đến|Our final destination is Seoul.
+fare|giá vé|The fare includes one carry-on bag.
+confirm|xác nhận|Please confirm your booking by email.`,
+"Tài chính":`invoice|hóa đơn|Please send the invoice by Friday.
+refund|hoàn tiền|Customers can request a full refund.
+reimburse|hoàn trả chi phí|The company will reimburse all travel costs.
+budget|ngân sách|The budget was approved yesterday.
+expense|chi phí|Every expense must have a receipt.
+revenue|doanh thu|Annual revenue rose by ten percent.
+discount|giảm giá|Members receive a discount on all items.
+shipment|lô hàng|The shipment arrives next Monday.`};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+function mk(w,m,e,t,x){return Object.assign({id:Date.now()+Math.random(),w:w.trim(),m:(m||"").trim(),e:(e||"").trim(),t:(t||DEF).trim()||DEF,box:1,due:0},x||{})}
+function load(){try{const s=localStorage.getItem(KEY);if(s){const d=JSON.parse(s);d.forEach(c=>{c.t=c.t||DEF});return d}}catch(x){}
+ const r=[];for(const t in SEED)SEED[t].split("\n").forEach(l=>{const p=l.split("|");r.push(mk(p[0],p[1],p[2],t))});return r}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(cards))}catch(x){}}
+let cards=load(),queue=[],flipped=false,topic="",qz=null;
+const pick=()=>cards.filter(c=>!topic||c.t===topic);
+function sel(){const t=[...new Set(cards.map(c=>c.t))];return '<select id="tp" aria-label="Chủ đề"><option value="">Tất cả chủ đề</option>'+t.map(x=>'<option value="'+esc(x)+'"'+(x===topic?" selected":"")+'>'+esc(x)+'</option>').join("")+'</select>'}
+function bs(cb){const s=$("tp");if(s)s.onchange=()=>{topic=s.value;cb()}}
+function build(all){const n=Date.now();queue=shuf(pick().filter(c=>all||c.due<=n));flipped=false}
+function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(x){}}
+function head(){$("stat").textContent="Cần ôn: "+cards.filter(c=>c.due<=Date.now()).length+" · Tổng: "+cards.length}
+function study(){
+ head();const el=$("study"),c=queue[0],rb=()=>{build(false);study()};
+ if(!c){el.innerHTML=sel()+'<div class="done"><h2>Đã ôn xong các thẻ đến hạn</h2><p class="stat">Quay lại sau để ôn tiếp, hoặc thử phần trắc nghiệm.</p><div class="row"><button class="btn" id="all">Ôn lại tất cả</button></div></div>';
+  bs(rb);$("all").onclick=()=>{build(true);study()};return}
+ el.innerHTML=sel()+'<div class="card" id="c" tabindex="0" role="button" aria-label="Lật thẻ"><div class="box">'+esc(c.t)+' · Hộp '+c.box+' · còn '+queue.length+' thẻ</div>'+
+ (flipped?'<div class="mean">'+esc(c.m||"(chưa có nghĩa)")+'</div>'+(c.d?'<div class="ex" style="font-style:normal">'+(c.pos?'('+esc(c.pos)+') ':'')+esc(c.d)+'</div>':'')+(c.dv?'<div class="hint">'+esc(c.dv)+'</div>':'')+(c.e?'<div class="ex">'+esc(c.e)+'</div>':"")+'<div class="word" style="font-size:20px;margin-top:16px">'+esc(c.w)+'</div>':'<div class="word">'+esc(c.w)+'</div><div class="hint">Chạm để lật thẻ</div>')+
+ '<button class="spk" id="s">Nghe phát âm</button></div>'+
+ (flipped?'<div class="row"><button class="no" id="n">Chưa nhớ</button><button class="ok" id="y">Đã nhớ</button></div><div class="hint" style="text-align:center">Vuốt trái: chưa nhớ · Vuốt phải: đã nhớ</div>':"");
+ bs(rb);const card=$("c");card.onclick=e=>{if(e.target.id==="s")return;flipped=!flipped;study()};
+ $("s").onclick=e=>{e.stopPropagation();say(c.w)};
+ if(flipped){$("n").onclick=()=>ans(false);$("y").onclick=()=>ans(true)}
+ let x0=null;card.ontouchstart=e=>{x0=e.touches[0].clientX};
+ card.ontouchend=e=>{if(x0===null||!flipped)return;const d=e.changedTouches[0].clientX-x0;x0=null;if(d>70)ans(true);else if(d<-70)ans(false)};
+}
+function ans(ok){const c=queue[0];
+ if(ok){c.box=Math.min(5,c.box+1);c.due=Date.now()+IV[c.box-1]*DAY;queue.shift()}
+ else{c.box=1;c.due=Date.now()+6e5;queue.push(queue.shift())}
+ flipped=false;save();study()}
+/* Trắc nghiệm kiểu Part 5: điền từ vào chỗ trống */
+function mkq(c,pool){
+ const re=new RegExp("\\b"+c.w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","i");
+ const ds=shuf(pool.filter(x=>x.id!==c.id&&x.w.toLowerCase()!==c.w.toLowerCase())).slice(0,3).map(x=>x.w);
+ const o=shuf([c.w].concat(ds));
+ return{c:c,o:o,a:o.indexOf(c.w),p:null,txt:(c.e&&re.test(c.e))?c.e.replace(re,"_______"):"Chọn từ có nghĩa: "+(c.m||"?")}}
+function startQuiz(){const pool=pick();qz={l:shuf(pool).slice(0,10).map(c=>mkq(c,pool)),i:0,s:0};quiz()}
+function quiz(){
+ head();const el=$("quiz"),pool=pick(),rb=()=>{qz=null;quiz()};
+ if(!qz){el.innerHTML=sel()+(pool.length<4?'<p class="stat">Cần ít nhất 4 từ trong chủ đề để làm trắc nghiệm. Hãy thêm từ ở tab Thêm từ.</p>':'<div class="done"><h2>Trắc nghiệm kiểu Part 5</h2><p class="stat">Chọn từ đúng để điền vào chỗ trống. Mỗi lượt tối đa 10 câu. Câu sai sẽ quay về hộp 1 để ôn lại sớm.</p><div class="row"><button class="btn" id="go">Bắt đầu</button></div></div>');
+  bs(rb);if($("go"))$("go").onclick=startQuiz;return}
+ if(qz.i>=qz.l.length){el.innerHTML=sel()+'<div class="done"><h2>Kết quả: '+qz.s+'/'+qz.l.length+'</h2><p class="stat">Các từ làm sai đã được đưa về hộp 1.</p><div class="row"><button class="btn" id="go">Làm lượt mới</button></div></div>';bs(rb);$("go").onclick=startQuiz;return}
+ const q=qz.l[qz.i],L="ABCD";
+ el.innerHTML=sel()+'<div class="card q"><div class="box">Câu '+(qz.i+1)+'/'+qz.l.length+' · '+esc(q.c.t)+'</div><div class="prompt">'+esc(q.txt)+'</div>'+
+ q.o.map((w,i)=>'<button class="opt'+(q.p!==null?(i===q.a?" right":(i===q.p?" wrong":"")):"")+'" data-i="'+i+'"'+(q.p!==null?" disabled":"")+'>('+L[i]+') '+esc(w)+'</button>').join("")+
+ (q.p!==null?'<div class="ex">'+esc(q.c.w)+' = '+esc(q.c.m)+'</div><div class="row"><button class="btn" id="nx">'+(qz.i+1<qz.l.length?"Câu tiếp theo":"Xem kết quả")+'</button></div>':"")+'</div>';
+ bs(rb);
+ document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pickOpt(+b.dataset.i));
+ if(q.p!==null)$("nx").onclick=next;
+}
+function pickOpt(i){const q=qz&&qz.l[qz.i];if(!q||q.p!==null)return;q.p=i;
+ if(i===q.a)qz.s++;else{q.c.box=1;q.c.due=Date.now();save()}quiz()}
+function next(){qz.i++;quiz()}
+/* Tra từ: Free Dictionary API + Wiktionary (dự phòng), MyMemory dịch sang tiếng Việt, có bộ nhớ đệm */
+let CH={};try{CH=JSON.parse(localStorage.getItem("toeic.cache.v1"))||{}}catch(x){}
+function cput(k,v){CH[k]=v;try{const ks=Object.keys(CH);if(ks.length>400)ks.slice(0,150).forEach(z=>delete CH[z]);localStorage.setItem("toeic.cache.v1",JSON.stringify(CH))}catch(x){}}
+const dec=s=>{const t=document.createElement("textarea");t.innerHTML=s;return t.value};
+const strip=s=>dec(String(s||"").replace(/<[^>]*>/g,"")).trim();
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const nf=()=>{const e=new Error("nf");e.nf=1;return e};
+function jget(url,ms){const ac=new AbortController(),id=setTimeout(()=>ac.abort(),ms||6000);
+ return fetch(url,{signal:ac.signal}).then(r=>{clearTimeout(id);if(r.status===404)throw nf();if(!r.ok)throw new Error("HTTP "+r.status);return r.json()},e=>{clearTimeout(id);throw e})}
+const P1=w=>jget("https://api.dictionaryapi.dev/api/v2/entries/en/"+encodeURIComponent(w)).then(d=>{const a=[];
+ d.forEach(en=>(en.meanings||[]).forEach(m=>(m.definitions||[]).forEach(x=>a.push({pos:m.partOfSpeech,d:x.definition,e:x.example||"",dv:""}))));if(!a.length)throw nf();return a});
+const P2=w=>jget("https://en.wiktionary.org/api/rest_v1/page/definition/"+encodeURIComponent(w)).then(d=>{const a=[];
+ (d.en||[]).forEach(m=>(m.definitions||[]).forEach(x=>{const t=strip(x.definition);if(t)a.push({pos:(m.partOfSpeech||"").toLowerCase(),d:t,e:strip((x.examples||[])[0]),dv:""})}));if(!a.length)throw nf();return a});
+async function getSenses(w){
+ if(CH["d:"+w])return CH["d:"+w];
+ const a=P1(w),b=P2(w);b.catch(()=>{});
+ let r=await Promise.race([a.catch(()=>null),sleep(2500).then(()=>null)]);
+ if(!r){try{r=await Promise.any([a,b])}catch(er){const es=er.errors||[er];if(es.every(x=>x&&x.nf))throw nf();throw es.find(x=>!x.nf)||er}}
+ r=r.slice(0,8);cput("d:"+w,r);return r}
+async function tr(s){const k="t:"+s;if(CH[k])return CH[k];
+ for(let i=0;i<2;i++){try{const j=await jget("https://api.mymemory.translated.net/get?q="+encodeURIComponent(s)+"&langpair=en|vi",8000);
+  const t=j.responseData&&j.responseData.translatedText;if(t&&!/MYMEMORY WARNING|INVALID/i.test(t)){const v=dec(t);cput(k,v);return v}}catch(x){}await sleep(400)}return""}
+let senses=[],lk=0;
+async function lookup(){
+ const w=$("q").value.trim().toLowerCase(),el=$("res"),my=++lk;if(!w){$("q").focus();return}
+ el.innerHTML='<p class="stat">Đang tra từ...</p>';
+ try{senses=(await getSenses(w)).map(s=>Object.assign({},s))}catch(x){if(my!==lk)return;
+  el.innerHTML=x.nf?'<p class="stat">Không tìm thấy "'+esc(w)+'". Hãy kiểm tra chính tả hoặc nhập thủ công ở mục bên dưới.</p>':
+  '<p class="stat">Không tra được ('+esc(x.name==="AbortError"?"quá thời gian chờ":(x.message||"lỗi mạng"))+'). Hãy kiểm tra kết nối rồi thử lại, hoặc nhập thủ công.</p><div class="row"><button class="btn ghost" id="retry">Thử lại</button></div>';
+  if($("retry"))$("retry").onclick=lookup;return}
+ if(my!==lk)return;
+ el.innerHTML='<label for="mv">Nghĩa tiếng Việt ngắn của từ (có thể sửa)</label><input type="text" id="mv" placeholder="Đang dịch..."><label>Chọn nghĩa muốn học</label>'+
+ senses.map((s,i)=>'<div class="sense"><label class="sl"><input type="checkbox" data-i="'+i+'"><span><b>'+esc(s.pos)+'</b> '+esc(s.d)+'<br><span class="vi" id="dv'+i+'">Đang dịch...</span></span></label><input type="text" id="se'+i+'" value="'+esc(s.e)+'" placeholder="Câu ví dụ (có thể sửa hoặc tự viết)"></div>').join("")+
+ '<div class="row"><button class="btn" id="addSel">Thêm các nghĩa đã chọn</button></div>';
+ tr(w).then(t=>{const n=$("mv");if(my===lk&&n){n.value=t;n.placeholder="Nhập nghĩa tiếng Việt"}});
+ senses.forEach((s,i)=>tr(s.d).then(t=>{s.dv=t;const n=$("dv"+i);if(my===lk&&n)n.textContent=t||"(chưa dịch được)"}));
+ $("addSel").onclick=()=>{const ch=[...el.querySelectorAll("input[type=checkbox]:checked")];
+  if(!ch.length){alert("Hãy chọn ít nhất một nghĩa.");return}
+  const a=ch.map(c=>{const s=senses[+c.dataset.i];return mk(w,$("mv").value,$("se"+c.dataset.i).value,$("t").value,{d:s.d,dv:s.dv,pos:s.pos})});
+  $("q").value="";el.innerHTML="";addCards(a)}}
+$("look").onclick=lookup;$("q").onkeydown=e=>{if(e.key==="Enter")lookup()};
+function addCards(a){if(!a.length)return;cards=cards.concat(a);save();build(false);tab("study")}
+$("addOne").onclick=()=>{const w=$("w").value;if(!w.trim()){$("w").focus();return}addCards([mk(w,$("m").value,$("e").value,$("t").value)]);$("w").value=$("m").value=$("e").value=""};
+$("addBulk").onclick=()=>{const t=$("t").value;const a=$("bulk").value.split("\n").map(l=>l.split("|")).filter(p=>p[0]&&p[0].trim()).map(p=>mk(p[0],p[1],p[2],t));$("bulk").value="";addCards(a)};
+$("exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(cards)],{type:"application/json"}));a.download="toeic-flashcards.json";a.click()};
+$("imp").onclick=()=>$("file").click();
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(Array.isArray(d)){d.forEach(c=>{c.t=c.t||DEF});cards=d;save();build(false);tab("study")}}catch(x){alert("File không hợp lệ.")}})};
+function list(){$("tl").innerHTML=[...new Set(cards.map(c=>c.t))].map(t=>'<option value="'+esc(t)+'">').join("");
+ $("list").innerHTML=cards.length?cards.map(c=>'<div class="item"><b>'+esc(c.w)+'</b><span>'+esc(c.m)+' · '+esc(c.t)+'</span></div>').join(""):'<p class="stat">Chưa có từ nào. Hãy thêm từ đầu tiên.</p>'}
+function stats(){const n=[0,0,0,0,0];pick().forEach(c=>n[c.box-1]++);const mx=Math.max(1,...n);
+ $("stats").innerHTML=sel()+'<div class="card q"><div class="bars">'+n.map((v,i)=>'<div class="bar"><span style="width:64px">Hộp '+(i+1)+'</span><i style="width:'+Math.round(v/mx*180)+'px"></i><b>'+v+'</b></div>').join("")+'</div><div class="hint">Hộp 5 là từ đã thuộc, sẽ được nhắc lại sau 14 ngày.</div></div>';bs(stats)}
+function tab(t){["study","quiz","add","stats"].forEach(k=>{$(k).hidden=k!==t});document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+ if(t==="study"){build(false);study()}if(t==="quiz")quiz();if(t==="add"){list();head()}if(t==="stats")stats()}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>tab(b.dataset.t));
+document.onkeydown=e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+ if(!$("study").hidden){if(e.code==="Space"&&queue[0]){e.preventDefault();flipped=!flipped;study()}
+  else if(flipped&&e.key==="ArrowRight")ans(true);else if(flipped&&e.key==="ArrowLeft")ans(false)}
+ else if(!$("quiz").hidden&&qz&&qz.i<qz.l.length){const q=qz.l[qz.i];
+  if(q.p===null&&"1234".includes(e.key)&&e.key)pickOpt(+e.key-1);else if(q.p!==null&&e.key==="Enter")next()}};
+build(false);study();
+</script>
+</body>
+</html>
